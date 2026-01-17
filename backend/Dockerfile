@@ -14,7 +14,7 @@ RUN npm ci
 COPY . .
 
 # Generate Prisma Client
-RUN npx prisma generate
+RUN DATABASE_URL="file:./dev.db" npx prisma generate
 
 # Build the application
 RUN npm run build
@@ -36,7 +36,7 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Generate Prisma Client in production
-RUN npx prisma generate
+RUN DATABASE_URL="file:./dev.db" npx prisma generate
 
 # Expose port
 EXPOSE 3001
