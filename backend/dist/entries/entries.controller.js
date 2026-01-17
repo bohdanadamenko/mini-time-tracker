@@ -16,6 +16,7 @@ exports.EntriesController = void 0;
 const common_1 = require("@nestjs/common");
 const entries_service_1 = require("./entries.service");
 const create_entry_dto_1 = require("./dto/create-entry.dto");
+const update_entry_dto_1 = require("./dto/update-entry.dto");
 let EntriesController = class EntriesController {
     entriesService;
     constructor(entriesService) {
@@ -24,8 +25,17 @@ let EntriesController = class EntriesController {
     findAll() {
         return this.entriesService.findAll();
     }
+    findOne(id) {
+        return this.entriesService.findOne(id);
+    }
     create(createEntryDto) {
         return this.entriesService.create(createEntryDto);
+    }
+    update(id, updateEntryDto) {
+        return this.entriesService.update(id, updateEntryDto);
+    }
+    remove(id) {
+        return this.entriesService.remove(id);
     }
 };
 exports.EntriesController = EntriesController;
@@ -36,12 +46,34 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], EntriesController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], EntriesController.prototype, "findOne", null);
+__decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_entry_dto_1.CreateEntryDto]),
     __metadata("design:returntype", void 0)
 ], EntriesController.prototype, "create", null);
+__decorate([
+    (0, common_1.Put)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, update_entry_dto_1.UpdateEntryDto]),
+    __metadata("design:returntype", void 0)
+], EntriesController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], EntriesController.prototype, "remove", null);
 exports.EntriesController = EntriesController = __decorate([
     (0, common_1.Controller)('entries'),
     __metadata("design:paramtypes", [entries_service_1.EntriesService])

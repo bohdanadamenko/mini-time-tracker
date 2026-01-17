@@ -5,4 +5,5 @@ export const PROJECTS = [
   "Personal Development",
 ];
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+// Use Next.js API proxy to avoid CORS/browser blocking issues
+export const API_URL = '/api';

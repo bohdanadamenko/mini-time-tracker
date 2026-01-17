@@ -2,38 +2,93 @@
 
 A simple web application for tracking work hours across different projects.
 
+## ✨ Screenshots
+
+The application features a modern, clean interface with:
+- **Sticky Header**: App branding with logo and entry count
+- **Welcome Section**: Gradient text with clear call-to-action
+- **Time Entry Form**: Intuitive form with icons and helpful placeholders
+- **Entry History**: Beautiful cards with project badges and statistics
+- **Toast Notifications**: Real-time feedback for all user actions
+
 ## Tech Stack
 
-- **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS v4.
-- **Backend**: NestJS v11, REST API.
-- **Database**: SQLite with Prisma ORM.
-- **Validation**: class-validator (Backend) and React state (Frontend).
+- **Frontend**: Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Lucide Icons
+- **Backend**: NestJS v11, REST API
+- **Database**: SQLite with Prisma ORM
+- **Validation**: class-validator (Backend) and React state (Frontend)
 
 ## Prerequisites
 
-- **Node.js**: v20.9.0 or higher.
+- **Node.js**: v22.x or higher (LTS recommended).
 - **npm**: v10 or higher.
+- **Docker** (optional): For containerized deployment.
 
 ## Getting Started
 
-### 1. Clone the repository
+### Option 1: Using Docker (Recommended)
+
+The easiest way to run the application is using Docker:
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd mini-time-tracker
+
+# Start all services with Docker Compose
+docker-compose up -d
+
+# The application will be available at:
+# - Frontend: http://localhost:3000
+# - Backend: http://localhost:3001
+```
+
+### Option 2: Manual Setup
+
+#### Prerequisites Check
+Before starting, ensure you have Node.js v22 or higher:
+```bash
+node --version  # Should show v22.x or higher
+```
+
+If you have an older version on macOS, install Node.js v22:
+```bash
+# Using Homebrew
+brew install node@22
+
+# Add to your PATH (add to ~/.zshrc for permanent use)
+export PATH="/opt/homebrew/opt/node@22/bin:$PATH"
+```
+
+#### Quick Start (Recommended)
+Use the provided scripts to start both servers:
+```bash
+./start-dev.sh   # Start both servers
+./stop-dev.sh    # Stop both servers
+```
+
+#### Manual Setup
+
+**1. Clone the repository**
 ```bash
 git clone <repository-url>
 cd mini-time-tracker
 ```
 
-### 2. Setup Backend
+**2. Setup Backend**
 ```bash
 cd backend
+cp .env.example .env
 npm install
 npx prisma migrate dev --name init
 npm run start:dev
 ```
 The backend will run on `http://localhost:3001`.
 
-### 3. Setup Frontend
+**3. Setup Frontend** (in a new terminal)
 ```bash
-cd ../frontend
+cd frontend
+cp .env.example .env.local
 npm install
 npm run dev
 ```
@@ -43,18 +98,143 @@ The frontend will run on `http://localhost:3000`.
 
 ### Backend
 - **NestJS**: Modular architecture with `EntriesModule` handling the business logic.
-- **Prisma**: Used for type-safe database access and migrations.
-- **Validation**: 
+- **Prisma**: Used for type-safe database access and migrations with optimized indexes.
+- **Validation**:
+  - Global `ValidationPipe` with whitelist and transformation enabled.
   - `CreateEntryDto` ensures all fields are present and valid.
   - `EntriesService` implements the 24-hour limit per calendar date.
+- **Error Handling**: Global exception filter for consistent error responses.
+- **CORS**: Configured with explicit origin, credentials, and allowed methods.
 
 ### Frontend
 - **Next.js App Router**: Modern routing and server/client component separation.
-- **Tailwind CSS**: Custom UI components for a premium look and feel.
+- **Tailwind CSS v4**: Modern design system with custom UI components.
+- **Design Features**:
+  - Modern blue gradient color scheme with light/dark mode support
+  - Smooth animations and transitions for better UX
+  - Responsive design optimized for mobile and desktop
+  - Sticky header with app branding and stats
+  - Toast notifications for user feedback
+  - Beautiful card-based layouts with hover effects
+  - Icon integration for better visual hierarchy
 - **API Client**: Typed fetch wrapper for interacting with the backend.
 
+### Database
+- **SQLite**: Lightweight database with Prisma ORM.
+- **Indexes**: Optimized indexes on `date`, `project`, and composite `(date, project)` for improved query performance.
+
 ## Features
-- Add time entries with date, project, hours, and description.
-- View history grouped by date.
-- Automatic calculation of daily totals and grand total.
-- Validation for maximum 24 hours per day.
+
+### Core Functionality
+- ✅ **Add Time Entries**: Log work hours with date, project, hours, and description
+- ✅ **Entry Management**: Delete entries with confirmation
+- ✅ **Smart Validation**: Enforce maximum 24 hours per day with real-time feedback
+- ✅ **History View**: Browse entries grouped by date with daily and grand totals
+- ✅ **Project Tracking**: Organize work across multiple projects
+
+### User Experience
+- 🎨 **Modern UI**: Beautiful gradient design with smooth animations
+- 🌓 **Dark Mode**: Automatic light/dark theme based on system preferences
+- 📱 **Responsive**: Optimized for desktop, tablet, and mobile devices
+- ⚡ **Real-time Feedback**: Toast notifications for all actions
+- 🎯 **Intuitive Layout**: Clean, organized interface with visual hierarchy
+- ✨ **Smooth Animations**: Fade-in, slide-up, and scale effects
+
+### Technical Features
+- 🔒 **Type-Safe**: Full TypeScript implementation
+- 🚀 **Performance**: Optimized database queries with indexes
+- 🐳 **Docker Ready**: Easy deployment with Docker Compose
+- 🔄 **CRUD Operations**: Complete Create, Read, Update, Delete support
+- 📊 **Statistics**: Track total hours across all entries
+
+## Development
+
+### Running Tests
+```bash
+# Backend tests
+cd backend
+npm test
+
+# Frontend tests (if available)
+cd frontend
+npm test
+```
+
+### Database Migrations
+```bash
+cd backend
+# Create a new migration
+npx prisma migrate dev --name your_migration_name
+
+# Apply migrations in production
+npx prisma migrate deploy
+```
+
+### Code Quality
+```bash
+# Lint backend code
+cd backend
+npm run lint
+
+# Lint frontend code
+cd frontend
+npm run lint
+
+# Format code with Prettier
+cd backend
+npm run format
+```
+
+## Environment Variables
+
+### Backend (.env)
+```
+DATABASE_URL="file:./dev.db"
+PORT=3001
+NODE_ENV=development
+FRONTEND_URL="http://localhost:3000"
+```
+
+### Frontend (.env.local)
+```
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+## Docker Deployment
+
+Build and run with Docker Compose:
+```bash
+docker-compose up --build
+```
+
+Stop services:
+```bash
+docker-compose down
+```
+
+View logs:
+```bash
+docker-compose logs -f
+```
+
+## Project Structure
+```
+mini-time-tracker/
+├── backend/
+│   ├── prisma/
+│   │   └── schema.prisma
+│   ├── src/
+│   │   ├── entries/
+│   │   ├── filters/
+│   │   └── main.ts
+│   ├── Dockerfile
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── app/
+│   │   ├── components/
+│   │   └── lib/
+│   ├── Dockerfile
+│   └── package.json
+└── docker-compose.yml
+```

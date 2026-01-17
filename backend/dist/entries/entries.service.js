@@ -23,8 +23,47 @@ let EntriesService = class EntriesService {
             orderBy: { date: 'desc' },
         });
     }
+    async findOne(id) {
+        const entry = await this.prisma.timeEntry.findUnique({
+            where: { id },
+        });
+        if (!entry) {
+            throw new common_1.NotFoundException(`Entry with ID ${id} not found`);
+        }
+        return entry;
+    }
     async create(createEntryDto) {
         const { date, hours } = createEntryDto;
+        await this.validateDailyHours(date, hours);
+        return this.prisma.timeEntry.create({
+            data: {
+                ...createEntryDto,
+                date: new Date(date),
+            },
+        });
+    }
+    async update(id, updateEntryDto) {
+        const currentEntry = await this.findOne(id);
+        if (updateEntryDto.hours !== undefined || updateEntryDto.date !== undefined) {
+            const newDate = updateEntryDto.date || currentEntry.date.toISOString();
+            const newHours = updateEntryDto.hours ?? currentEntry.hours;
+            await this.validateDailyHours(newDate, newHours, id);
+        }
+        return this.prisma.timeEntry.update({
+            where: { id },
+            data: {
+                ...updateEntryDto,
+                date: updateEntryDto.date ? new Date(updateEntryDto.date) : undefined,
+            },
+        });
+    }
+    async remove(id) {
+        await this.findOne(id);
+        return this.prisma.timeEntry.delete({
+            where: { id },
+        });
+    }
+    async validateDailyHours(date, hours, excludeEntryId) {
         const entryDate = new Date(date);
         entryDate.setHours(0, 0, 0, 0);
         const nextDay = new Date(entryDate);
@@ -35,18 +74,13 @@ let EntriesService = class EntriesService {
                     gte: entryDate,
                     lt: nextDay,
                 },
+                ...(excludeEntryId && { id: { not: excludeEntryId } }),
             },
         });
         const totalHours = entriesForDay.reduce((sum, entry) => sum + entry.hours, 0);
         if (totalHours + hours > constants_1.MAX_HOURS_PER_DAY) {
             throw new common_1.BadRequestException(`Total hours for a single day cannot exceed ${constants_1.MAX_HOURS_PER_DAY} hours`);
         }
-        return this.prisma.timeEntry.create({
-            data: {
-                ...createEntryDto,
-                date: new Date(date),
-            },
-        });
     }
 };
 exports.EntriesService = EntriesService;
