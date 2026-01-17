@@ -146,6 +146,17 @@ The frontend will run on `http://localhost:3000`.
 - 🐳 **Docker Ready**: Easy deployment with Docker Compose
 - 🔄 **CRUD Operations**: Complete Create, Read, Update, Delete support
 - 📊 **Statistics**: Track total hours across all entries
+- 🔄 **CI/CD**: Automated testing and build verification with GitHub Actions
+
+## CI/CD Pipeline
+
+The project includes a GitHub Actions workflow that automatically:
+- **Builds** both frontend and backend to ensure no compilation errors.
+- **Lints** the code to maintain quality standards.
+- **Verifies Docker Builds** for both services to ensure container compatibility.
+- **Caches Dependencies** to speed up workflow execution.
+
+The pipeline runs on every push to the `main` branch and on all pull requests.
 
 ## Development
 
