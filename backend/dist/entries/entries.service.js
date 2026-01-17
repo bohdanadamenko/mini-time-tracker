@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntriesService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma.service");
+const constants_1 = require("../constants");
 let EntriesService = class EntriesService {
     prisma;
     constructor(prisma) {
@@ -37,8 +38,8 @@ let EntriesService = class EntriesService {
             },
         });
         const totalHours = entriesForDay.reduce((sum, entry) => sum + entry.hours, 0);
-        if (totalHours + hours > 24) {
-            throw new common_1.BadRequestException('Total hours for a single day cannot exceed 24 hours');
+        if (totalHours + hours > constants_1.MAX_HOURS_PER_DAY) {
+            throw new common_1.BadRequestException(`Total hours for a single day cannot exceed ${constants_1.MAX_HOURS_PER_DAY} hours`);
         }
         return this.prisma.timeEntry.create({
             data: {

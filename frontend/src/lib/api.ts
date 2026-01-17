@@ -15,7 +15,7 @@ export interface CreateEntryDto {
   description: string;
 }
 
-const API_URL = 'http://localhost:3001';
+import { API_URL } from './constants';
 
 export const api = {
   async getEntries(): Promise<TimeEntry[]> {

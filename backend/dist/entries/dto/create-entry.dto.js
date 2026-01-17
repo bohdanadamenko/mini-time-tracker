@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateEntryDto = void 0;
 const class_validator_1 = require("class-validator");
+const constants_1 = require("../../constants");
 class CreateEntryDto {
     date;
     project;
@@ -30,8 +31,8 @@ __decorate([
 ], CreateEntryDto.prototype, "project", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(0.1),
-    (0, class_validator_1.Max)(24),
+    (0, class_validator_1.Min)(constants_1.MIN_HOURS_PER_ENTRY),
+    (0, class_validator_1.Max)(constants_1.MAX_HOURS_PER_DAY),
     __metadata("design:type", Number)
 ], CreateEntryDto.prototype, "hours", void 0);
 __decorate([

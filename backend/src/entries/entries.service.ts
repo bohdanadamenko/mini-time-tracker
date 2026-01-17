@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateEntryDto } from './dto/create-entry.dto';
+import { MAX_HOURS_PER_DAY } from '../constants';
 
 @Injectable()
 export class EntriesService {
@@ -32,8 +33,8 @@ export class EntriesService {
 
     const totalHours = entriesForDay.reduce((sum, entry) => sum + entry.hours, 0);
 
-    if (totalHours + hours > 24) {
-      throw new BadRequestException('Total hours for a single day cannot exceed 24 hours');
+    if (totalHours + hours > MAX_HOURS_PER_DAY) {
+      throw new BadRequestException(`Total hours for a single day cannot exceed ${MAX_HOURS_PER_DAY} hours`);
     }
 
     return this.prisma.timeEntry.create({

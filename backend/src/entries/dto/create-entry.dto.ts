@@ -1,4 +1,5 @@
 import { IsDateString, IsNotEmpty, IsNumber, IsString, Min, Max } from 'class-validator';
+import { MIN_HOURS_PER_ENTRY, MAX_HOURS_PER_DAY } from '../../constants';
 
 export class CreateEntryDto {
   @IsDateString()
@@ -10,8 +11,8 @@ export class CreateEntryDto {
   project: string;
 
   @IsNumber()
-  @Min(0.1)
-  @Max(24)
+  @Min(MIN_HOURS_PER_ENTRY)
+  @Max(MAX_HOURS_PER_DAY)
   hours: number;
 
   @IsString()

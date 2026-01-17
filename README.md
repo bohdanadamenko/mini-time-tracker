@@ -4,15 +4,15 @@ A simple web application for tracking work hours across different projects.
 
 ## Tech Stack
 
-- **Frontend**: Next.js 15, TypeScript, Tailwind CSS.
-- **Backend**: NestJS, REST API.
+- **Frontend**: Next.js 13 (Pages Router), TypeScript, Tailwind CSS v3.
+- **Backend**: NestJS v10, REST API.
 - **Database**: SQLite with Prisma ORM.
 - **Validation**: class-validator (Backend) and React state (Frontend).
 
 ## Prerequisites
 
-- **Node.js**: v20.9.0 or higher (Required for Next.js 15).
-- **npm**: v10 or higher.
+- **Node.js**: v16.17.0 or higher.
+- **npm**: v8 or higher.
 
 ## Getting Started
 

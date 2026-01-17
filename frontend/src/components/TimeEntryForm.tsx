@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 import { Button, Input, Textarea } from './ui/base';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { api, CreateEntryDto } from '@/lib/api';
-
-const PROJECTS = ["Viso Internal", "Client A", "Client B", "Personal Development"];
+import { PROJECTS } from '@/lib/constants';
 
 export function TimeEntryForm({ onEntryAdded }: { onEntryAdded: () => void }) {
   const [loading, setLoading] = useState(false);
