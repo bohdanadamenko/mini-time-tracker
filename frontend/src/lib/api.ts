@@ -26,11 +26,7 @@ import { API_URL } from './constants';
 
 export const api = {
   async getEntries(): Promise<TimeEntry[]> {
-    const url = `${API_URL}/entries`;
-    console.log('🌐 API_URL:', API_URL);
-    console.log('📡 Fetching from:', url);
-    const response = await fetch(url);
-    console.log('📥 Response status:', response.status, response.statusText);
+    const response = await fetch(`${API_URL}/entries`);
     if (!response.ok) throw new Error('Failed to fetch entries');
     return response.json();
   },
