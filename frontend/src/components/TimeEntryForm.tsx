@@ -90,7 +90,7 @@ export function TimeEntryForm({ onEntryAdded }: { onEntryAdded: () => void }) {
               required
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-              className="h-11 transition-all focus:scale-[1.01]"
+              className="h-11"
               aria-label="Select date for time entry"
             />
           </div>
@@ -103,7 +103,7 @@ export function TimeEntryForm({ onEntryAdded }: { onEntryAdded: () => void }) {
             </label>
             <select
               id="project-select"
-              className="flex h-11 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus:scale-[1.01] hover:border-primary/50 font-medium cursor-pointer"
+              className="flex h-11 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:border-primary/50 focus:border-primary font-medium cursor-pointer shadow-sm focus:shadow-md"
               value={formData.project}
               onChange={(e) => setFormData({ ...formData, project: e.target.value })}
               aria-label="Select project"
@@ -130,7 +130,7 @@ export function TimeEntryForm({ onEntryAdded }: { onEntryAdded: () => void }) {
               value={formData.hours || ''}
               onChange={(e) => setFormData({ ...formData, hours: Number(e.target.value) })}
               placeholder="e.g., 8.5"
-              className="h-11 transition-all focus:scale-[1.01]"
+              className="h-11"
               aria-label="Enter hours worked"
             />
           </div>
@@ -147,13 +147,13 @@ export function TimeEntryForm({ onEntryAdded }: { onEntryAdded: () => void }) {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Describe what you worked on..."
-              className="resize-none transition-all focus:scale-[1.01] min-h-[100px]"
+              className="resize-none min-h-[100px]"
               aria-label="Enter work description"
             />
           </div>
           <Button
             type="submit"
-            className="w-full h-12 text-base font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full h-12 text-base font-bold"
             disabled={loading}
           >
             {loading ? (

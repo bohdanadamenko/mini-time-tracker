@@ -27,7 +27,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background selection:bg-primary/10">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full glass supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full bg-background border-b border-border/50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
