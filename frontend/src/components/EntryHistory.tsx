@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { TimeEntry, api } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/base';
+import { Dialog } from './ui/dialog';
 import { format } from 'date-fns';
 import { Trash2, Calendar, Clock, Briefcase } from 'lucide-react';
 import { useToast } from './ui/toast';
@@ -15,22 +16,28 @@ interface EntryHistoryProps {
 
 export function EntryHistory({ entries, onEntriesChange }: EntryHistoryProps) {
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [entryToDelete, setEntryToDelete] = useState<{ id: number; project: string } | null>(null);
   const { showToast } = useToast();
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this entry?')) {
-      return;
-    }
+  const handleDeleteClick = (id: number, project: string) => {
+    setEntryToDelete({ id, project });
+    setDeleteDialogOpen(true);
+  };
 
-    setDeletingId(id);
+  const handleConfirmDelete = async () => {
+    if (!entryToDelete) return;
+
+    setDeletingId(entryToDelete.id);
     try {
-      await api.deleteEntry(id);
+      await api.deleteEntry(entryToDelete.id);
       showToast('Entry deleted successfully', 'success');
       onEntriesChange();
     } catch (error: any) {
       showToast(error.message || 'Failed to delete entry', 'error');
     } finally {
       setDeletingId(null);
+      setEntryToDelete(null);
     }
   };
 
@@ -123,7 +130,7 @@ export function EntryHistory({ entries, onEntriesChange }: EntryHistoryProps) {
                             variant="ghost"
                             size="sm"
                             disabled={deletingId === entry.id}
-                            onClick={() => handleDelete(entry.id)}
+                            onClick={() => handleDeleteClick(entry.id, entry.project)}
                             className="h-10 w-10 p-0 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-xl"
                             aria-label={`Delete entry for ${entry.project}`}
                           >
@@ -163,6 +170,18 @@ export function EntryHistory({ entries, onEntriesChange }: EntryHistoryProps) {
           </CardContent>
         </Card>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete Time Entry"
+        description={`Are you sure you want to delete this entry for "${entryToDelete?.project}"? This action cannot be undone.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setEntryToDelete(null)}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </div>
   );
 }
