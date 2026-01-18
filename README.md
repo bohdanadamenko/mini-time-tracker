@@ -2,14 +2,14 @@
 
 A simple web application for tracking work hours across different projects.
 
-## ✨ Screenshots
+## Features
 
-The application features a modern, clean interface with:
-- **Sticky Header**: App branding with logo and entry count
-- **Welcome Section**: Gradient text with clear call-to-action
-- **Time Entry Form**: Intuitive form with icons and helpful placeholders
-- **Entry History**: Beautiful cards with project badges and statistics
-- **Toast Notifications**: Real-time feedback for all user actions
+The application provides:
+- **Time Entry Form**: Clean form for logging work hours
+- **Entry History**: Organized view of all entries grouped by date
+- **Statistics**: Daily and grand totals for tracked hours
+- **Validation**: Enforces 24-hour daily limit
+- **Toast Notifications**: Real-time feedback for all actions
 
 ## Tech Stack
 
@@ -107,17 +107,12 @@ The frontend will run on `http://localhost:3000`.
 - **CORS**: Configured with explicit origin, credentials, and allowed methods.
 
 ### Frontend
-- **Next.js App Router**: Modern routing and server/client component separation.
-- **Tailwind CSS v4**: Modern design system with custom UI components.
-- **Design Features**:
-  - Modern blue gradient color scheme with light/dark mode support
-  - Smooth animations and transitions for better UX
-  - Responsive design optimized for mobile and desktop
-  - Sticky header with app branding and stats
-  - Toast notifications for user feedback
-  - Beautiful card-based layouts with hover effects
-  - Icon integration for better visual hierarchy
-- **API Client**: Typed fetch wrapper for interacting with the backend.
+- **Next.js App Router**: Modern routing with server/client component separation.
+- **Tailwind CSS v4**: Utility-first CSS framework for rapid UI development.
+- **TypeScript**: Full type safety across the application.
+- **API Proxy**: Next.js rewrites to proxy API calls and avoid CORS issues.
+- **UI Components**: Reusable Card, Button, Input, and Toast components.
+- **Responsive Design**: Mobile-first approach with clean, modern interface.
 
 ### Database
 - **SQLite**: Lightweight database with Prisma ORM.
@@ -210,6 +205,8 @@ FRONTEND_URL="http://localhost:3000"
 ```
 NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
+
+**Note**: The frontend uses Next.js API rewrites (proxy) to avoid CORS issues. All API calls go through `/api/*` which is automatically proxied to `http://localhost:3001/*`.
 
 ## Docker Deployment
 
