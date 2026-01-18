@@ -6,9 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { api, CreateEntryDto } from '@/lib/api';
 import { PROJECTS } from '@/lib/constants';
 import { useToast } from './ui/toast';
+import { DatePicker } from './ui/date-picker';
+import { format } from 'date-fns';
 
 export function TimeEntryForm({ onEntryAdded }: { onEntryAdded: () => void }) {
   const [loading, setLoading] = useState(false);
+  const [dailyTotal, setDailyTotal] = useState(0);
   const [formData, setFormData] = useState<CreateEntryDto>({
     date: '',
     project: PROJECTS[0],
@@ -24,16 +27,33 @@ export function TimeEntryForm({ onEntryAdded }: { onEntryAdded: () => void }) {
     }));
   }, []);
 
+  useEffect(() => {
+    if (formData.date) {
+      api.getDailyTotal(formData.date)
+        .then(res => setDailyTotal(res.total))
+        .catch(console.error);
+    }
+  }, [formData.date]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       if (formData.hours <= 0) throw new Error('Hours must be a positive number');
+      if (formData.hours + dailyTotal > 24) {
+        throw new Error(`Cannot exceed 24 hours per day. Remaining: ${(24 - dailyTotal).toFixed(1)} hours`);
+      }
+
       await api.createEntry({
         ...formData,
         hours: Number(formData.hours),
       });
+      
+      // Refresh daily total
+      const newTotal = await api.getDailyTotal(formData.date);
+      setDailyTotal(newTotal.total);
+
       setFormData({
         ...formData,
         hours: 0,
@@ -84,14 +104,10 @@ export function TimeEntryForm({ onEntryAdded }: { onEntryAdded: () => void }) {
               </svg>
               Date
             </label>
-            <Input
-              id="date-input"
-              type="date"
-              required
-              value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            <DatePicker
+              date={formData.date ? new Date(formData.date) : undefined}
+              setDate={(date) => setFormData({ ...formData, date: date ? format(date, 'yyyy-MM-dd') : '' })}
               className="h-11"
-              aria-label="Select date for time entry"
             />
           </div>
           <div className="space-y-2">
@@ -125,7 +141,7 @@ export function TimeEntryForm({ onEntryAdded }: { onEntryAdded: () => void }) {
               type="number"
               step="0.1"
               min="0.1"
-              max="24"
+              max={24 - dailyTotal}
               required
               value={formData.hours || ''}
               onChange={(e) => setFormData({ ...formData, hours: Number(e.target.value) })}
@@ -133,6 +149,11 @@ export function TimeEntryForm({ onEntryAdded }: { onEntryAdded: () => void }) {
               className="h-11"
               aria-label="Enter hours worked"
             />
+            <p className="text-xs text-muted-foreground font-medium text-right">
+              Remaining: <span className={24 - dailyTotal < 4 ? "text-orange-500 font-bold" : "text-primary font-bold"}>
+                {(24 - dailyTotal).toFixed(1)}
+              </span> hours
+            </p>
           </div>
           <div className="space-y-2">
             <label htmlFor="description-input" className="text-sm font-bold text-foreground flex items-center gap-2">

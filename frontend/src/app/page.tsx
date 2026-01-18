@@ -3,16 +3,38 @@
 import { useEffect, useState } from 'react';
 import { TimeEntryForm } from '@/components/TimeEntryForm';
 import { EntryHistory } from '@/components/EntryHistory';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { api, TimeEntry } from '@/lib/api';
 
 export default function Home() {
   const [entries, setEntries] = useState<TimeEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    project: '',
+    startDate: '',
+    endDate: '',
+  });
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    last_page: 1,
+  });
 
   const fetchEntries = async () => {
+    setLoading(true);
     try {
-      const data = await api.getEntries();
-      setEntries(data);
+      const response = await api.getEntries({
+        ...filters,
+        page: pagination.page,
+        limit: pagination.limit,
+      });
+      setEntries(response.data);
+      setPagination(prev => ({
+        ...prev,
+        total: response.meta.total,
+        last_page: response.meta.last_page,
+      }));
     } catch (error) {
       console.error('❌ Failed to fetch entries:', error);
     } finally {
@@ -22,7 +44,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchEntries();
-  }, []);
+  }, [filters, pagination.page]);
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary/10">
@@ -58,6 +80,7 @@ export default function Home() {
                 <span className="text-muted-foreground">Total Entries:</span>
                 <span className="font-bold text-primary">{entries.length}</span>
               </div>
+              <ThemeToggle />
             </div>
           </div>
         </div>
@@ -94,7 +117,14 @@ export default function Home() {
                   <p className="text-sm font-medium text-muted-foreground animate-pulse">Loading your entries...</p>
                 </div>
               ) : (
-                <EntryHistory entries={entries} onEntriesChange={fetchEntries} />
+                <EntryHistory
+                  entries={entries}
+                  onEntriesChange={fetchEntries}
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  pagination={pagination}
+                  onPageChange={(page) => setPagination(prev => ({ ...prev, page }))}
+                />
               )}
             </div>
           </div>

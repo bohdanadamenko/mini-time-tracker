@@ -3,6 +3,10 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
+# Build argument for backend URL (used at build time for rewrites)
+ARG BACKEND_URL=http://localhost:3001
+ENV BACKEND_URL=${BACKEND_URL}
+
 # Copy package files
 COPY package*.json ./
 

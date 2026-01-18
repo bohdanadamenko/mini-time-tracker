@@ -8,10 +8,75 @@ import { MAX_HOURS_PER_DAY } from '../constants';
 export class EntriesService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
-    return this.prisma.timeEntry.findMany({
-      orderBy: { date: 'desc' },
+  async findAll(params: {
+    project?: string;
+    startDate?: string;
+    endDate?: string;
+    page: number;
+    limit: number;
+  }) {
+    const { project, startDate, endDate, page, limit } = params;
+    const skip = (page - 1) * limit;
+
+    const where: any = {};
+
+    if (project && project !== 'all') {
+      where.project = project;
+    }
+
+    if (startDate || endDate) {
+      where.date = {};
+      if (startDate) {
+        where.date.gte = new Date(startDate);
+      }
+      if (endDate) {
+        // Set end date to end of day
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        where.date.lte = end;
+      }
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.timeEntry.findMany({
+        where,
+        orderBy: { date: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.timeEntry.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        last_page: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async getTotalHoursForDate(date: string) {
+    const entryDate = new Date(date);
+    entryDate.setHours(0, 0, 0, 0);
+
+    const nextDay = new Date(entryDate);
+    nextDay.setDate(entryDate.getDate() + 1);
+
+    const aggregate = await this.prisma.timeEntry.aggregate({
+      where: {
+        date: {
+          gte: entryDate,
+          lt: nextDay,
+        },
+      },
+      _sum: {
+        hours: true,
+      },
     });
+
+    return { total: aggregate._sum.hours || 0 };
   }
 
   async findOne(id: number) {
