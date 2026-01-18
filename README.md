@@ -143,13 +143,34 @@ The frontend will run on `http://localhost:3000`.
 - 📊 **Statistics**: Track total hours across all entries
 - 🔄 **CI/CD**: Automated testing and build verification with GitHub Actions
 
-## CI/CD Pipeline
+## Docker Support
+
+The project includes full Docker support for easy deployment:
+
+### Docker Architecture
+- **Backend Container**: NestJS application with SQLite database
+- **Frontend Container**: Next.js application with production build
+- **Docker Compose**: Orchestrates both services with proper networking
+
+### Key Features
+- Multi-stage builds for optimized image sizes
+- Health checks for both services
+- Persistent volume for SQLite database
+- Automatic service restart on failure
+- Environment-based configuration
+
+### Docker Files
+- `backend/Dockerfile` - Backend container configuration
+- `frontend/Dockerfile` - Frontend container configuration
+- `docker-compose.yml` - Service orchestration
+
+## CI Pipeline
 
 The project includes a GitHub Actions workflow that automatically:
-- **Builds** both frontend and backend to ensure no compilation errors.
-- **Lints** the code to maintain quality standards.
-- **Verifies Docker Builds** for both services to ensure container compatibility.
-- **Caches Dependencies** to speed up workflow execution.
+- **Builds** both frontend and backend to ensure no compilation errors
+- **Lints** the code to maintain quality standards
+- **Verifies Docker Builds** for both services to ensure container compatibility
+- **Caches Dependencies** to speed up workflow execution
 
 The pipeline runs on every push to the `main` branch and on all pull requests.
 
