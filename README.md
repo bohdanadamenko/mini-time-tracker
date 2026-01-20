@@ -1,22 +1,13 @@
 # Mini Time Tracker
 
-A simple web application for tracking work hours across different projects.
-
-## Features
-
-The application provides:
-- **Time Entry Form**: Clean form for logging work hours
-- **Entry History**: Organized view of all entries grouped by date
-- **Statistics**: Daily and grand totals for tracked hours
-- **Validation**: Enforces 24-hour daily limit
-- **Toast Notifications**: Real-time feedback for all actions
+A full-stack web application for tracking work hours across different projects with filtering, pagination, and a modern UI.
 
 ## Tech Stack
 
-- **Frontend**: Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Lucide Icons
+- **Frontend**: Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Radix UI, Lucide Icons
 - **Backend**: NestJS v11, REST API
 - **Database**: SQLite with Prisma ORM
-- **Validation**: class-validator (Backend) and React state (Frontend)
+- **DevOps**: Docker, Docker Compose, GitHub Actions CI/CD
 
 ## Prerequisites
 
@@ -121,27 +112,27 @@ The frontend will run on `http://localhost:3000`.
 ## Features
 
 ### Core Functionality
-- ✅ **Add Time Entries**: Log work hours with date, project, hours, and description
-- ✅ **Entry Management**: Delete entries with confirmation
-- ✅ **Smart Validation**: Enforce maximum 24 hours per day with real-time feedback
-- ✅ **History View**: Browse entries grouped by date with daily and grand totals
-- ✅ **Project Tracking**: Organize work across multiple projects
+- **Time Entry Management**: Create, edit, and delete time entries
+- **Project Tracking**: Organize work across predefined projects (Viso Internal, Client A, Client B, Personal Development)
+- **Smart Validation**: Enforce maximum 24 hours per calendar day
+- **Filtering**: Filter entries by project and date range
+- **Pagination**: Browse entries with configurable page size
+- **History View**: Entries grouped by date with daily and grand totals
 
 ### User Experience
-- 🎨 **Modern UI**: Beautiful gradient design with smooth animations
-- 🌓 **Dark Mode**: Automatic light/dark theme based on system preferences
-- 📱 **Responsive**: Optimized for desktop, tablet, and mobile devices
-- ⚡ **Real-time Feedback**: Toast notifications for all actions
-- 🎯 **Intuitive Layout**: Clean, organized interface with visual hierarchy
-- ✨ **Smooth Animations**: Fade-in, slide-up, and scale effects
+- **Dark Mode**: Light/dark theme toggle with system preference detection
+- **Responsive Design**: Optimized for desktop, tablet, and mobile
+- **Toast Notifications**: Real-time feedback for all actions
+- **Calendar Picker**: Premium date selection UI
+- **Smooth Animations**: Fade-in, slide-up, and scale effects
+- **Custom Dialogs**: Styled confirmation and edit dialogs
 
 ### Technical Features
-- 🔒 **Type-Safe**: Full TypeScript implementation
-- 🚀 **Performance**: Optimized database queries with indexes
-- 🐳 **Docker Ready**: Easy deployment with Docker Compose
-- 🔄 **CRUD Operations**: Complete Create, Read, Update, Delete support
-- 📊 **Statistics**: Track total hours across all entries
-- 🔄 **CI/CD**: Automated testing and build verification with GitHub Actions
+- **Type-Safe**: Full TypeScript implementation across frontend and backend
+- **Optimized Queries**: Database indexes on date, project, and composite fields
+- **Docker Ready**: Multi-stage builds with Docker Compose orchestration
+- **CI/CD Pipeline**: Automated build, lint, and Docker verification via GitHub Actions
+- **API Proxy**: Next.js rewrites handle CORS seamlessly
 
 ## Docker Support
 
@@ -246,24 +237,49 @@ View logs:
 docker-compose logs -f
 ```
 
+## API Endpoints
+
+Base URL: `http://localhost:3001`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/entries` | Get entries (supports filtering & pagination) |
+| GET | `/entries/:id` | Get single entry |
+| GET | `/entries/total-hours?date=YYYY-MM-DD` | Get daily total hours |
+| POST | `/entries` | Create new entry |
+| PUT | `/entries/:id` | Update entry |
+| DELETE | `/entries/:id` | Delete entry |
+
+### Query Parameters for GET /entries
+- `project` - Filter by project name
+- `startDate` - Start date (YYYY-MM-DD)
+- `endDate` - End date (YYYY-MM-DD)
+- `page` - Page number (default: 1)
+- `limit` - Items per page (default: 10)
+
 ## Project Structure
 ```
 mini-time-tracker/
 ├── backend/
 │   ├── prisma/
-│   │   └── schema.prisma
+│   │   └── schema.prisma      # Database schema
 │   ├── src/
-│   │   ├── entries/
-│   │   ├── filters/
-│   │   └── main.ts
+│   │   ├── entries/           # Time entry module (controller, service, DTOs)
+│   │   ├── filters/           # Global exception handling
+│   │   ├── main.ts            # Application bootstrap
+│   │   └── prisma.service.ts  # Database service
 │   ├── Dockerfile
 │   └── package.json
 ├── frontend/
 │   ├── src/
-│   │   ├── app/
-│   │   ├── components/
-│   │   └── lib/
+│   │   ├── app/               # Next.js pages
+│   │   ├── components/        # React components (form, history, dialogs)
+│   │   └── lib/               # API client, utilities, constants
 │   ├── Dockerfile
 │   └── package.json
-└── docker-compose.yml
+├── .github/workflows/
+│   └── ci.yml                 # GitHub Actions CI/CD
+├── docker-compose.yml         # Service orchestration
+├── start-dev.sh               # Development startup script
+└── stop-dev.sh                # Development shutdown script
 ```
