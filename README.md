@@ -51,14 +51,40 @@ Or use scripts: `./start-dev.sh` / `./stop-dev.sh`
 
 ```
 ├── backend/          # NestJS API
-│   ├── prisma/       # Database schema
-│   └── src/entries/  # Time entry module
-├── frontend/         # Next.js app
+│   ├── prisma/       # Database schema and migrations
+│   └── src/entries/  # Time entry module (Controller, Service, DTOs)
+├── frontend/         # Next.js application
 │   └── src/
-│       ├── components/
-│       └── lib/
-└── docker-compose.yml
+│       ├── components/ # Reusable UI components
+│       └── lib/        # API client and utilities
+└── docker-compose.yml # Infrastructure orchestration
 ```
+
+## Architecture
+
+The project follows a **Clean Architecture** approach with a clear separation between the presentation layer (Frontend) and the business logic layer (Backend).
+
+### Backend (NestJS)
+- **Modular Design**: Organized into feature modules (e.g., `EntriesModule`) for better maintainability.
+- **Service-Based Logic**: Business rules, such as the 24-hour daily limit validation, are encapsulated in services.
+- **Type Safety**: Leverages TypeScript and Prisma generated types for end-to-end type safety.
+- **RESTful API**: Provides a clean interface for the frontend to consume.
+
+### Frontend (Next.js)
+- **App Router**: Uses the latest Next.js features for routing and layout management.
+- **Component-Driven UI**: Built with reusable React components, styled with Tailwind CSS for a consistent look and feel.
+- **State Management**: Uses React hooks (`useState`, `useEffect`) for managing local state and API interactions.
+- **Responsive Design**: Fully responsive layout that works on mobile, tablet, and desktop.
+
+### Database (Prisma + SQLite)
+- **ORM**: Prisma is used for database modeling and type-safe queries.
+- **Indexing**: Database indexes are applied to `date` and `project` fields to optimize filtering and sorting performance.
+
+## Design Decisions
+
+- **SQLite for Development**: Chosen for its simplicity and zero-configuration setup, while being easily swappable for PostgreSQL in production thanks to Prisma.
+- **Server-Side Pagination**: Implemented to ensure the application remains performant as the number of time entries grows.
+- **Validation at Source**: Validation is performed on both the frontend (for immediate feedback) and the backend (for data integrity).
 
 ## Development
 
